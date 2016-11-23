@@ -1,0 +1,15 @@
+*.tmpl
+Makefile
+mips.H
+mips.cpp
+mips_arch.H
+mips_arch.cpp
+mips_arch_ref.H
+mips_arch_ref.cpp
+mips_bhv_macros.H
+mips_ih_bhv_macros.H
+mips_intr_handlers.H
+mips_isa.H
+mips_isa_init.cpp
+mips_parms.H
+*.a

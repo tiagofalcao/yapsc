@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package yapsc;
+
+message Syscall {
+  enum SyscallType {
+    UNDEFINED = 0;
+    EXIT = 1;
+    CREATE = 8;
+    OPEN = 5;
+    CLOSE = 6;
+    READ = 3;
+    WRITE = 4;
+    LSEEK = 19;
+    GETCWD = 183;
+    ISATTY = 1000;
+    SBRK = 1001;
+  }
+  SyscallType type = 1;
+  int32 FileDescriptor = 2;
+  bytes Buffer = 3;
+  string FilePath = 4;
+  int32 Flags = 5;
+  int32 Mode = 6;
+  int32 Offset = 7;
+  uint64 Pointer = 8;
+  int32 Error = 15;
+}
+
+message Message {
+  enum MessageType {
+    SYSCALL = 0;
+    BARRIER = 1;
+    DOMAIN_REGISTRY = 2;
+    TARGET_SOCKET_REGISTRY = 11;
+    TARGET_SOCKET_QUERY = 12;
+    END = 15;
+  }
+  MessageType type = 1;
+  uint32 Domain = 2;
+  int32 Status = 3;
+  string SocketName = 4;
+  string Address = 5;
+  uint32 Port = 6;
+  repeated string Names = 14;
+  Syscall Syscall = 15;
+}
+
+message Payload {
+  int32 Command = 1;
+  int32 ResponseStatus = 2;
+  uint64 Address = 3;
+
+  message Memory {
+    uint64 Address = 1;
+    bytes Data = 2;
+    uint64 Length = 3;
+  }
+  Memory Data = 4;
+  Memory ByteEnable = 5;
+
+  uint64 StreamingWidth = 6;
+  bool DMIAllowed = 7;
+  int32 GPOption = 8;
+
+  message Extension {
+    int64 ID = 1;
+    bytes Content = 2;
+  }
+  repeated Extension Extensions = 9;
+
+  int32 Domain = 14;
+  uint64 Pointer = 15;
+}

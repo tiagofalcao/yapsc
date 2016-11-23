@@ -1,0 +1,86 @@
+@startuml
+actor User as U
+database "File System" as FS
+control "Controller" as C
+participant "Logical\nProcess 1" as LP1
+participant "Logical\nProcess 2" as LP2
+
+== Initialization ==
+
+U->C: Start Simulation
+create LP1
+C->LP1: Init
+create LP2
+C->LP2: Init
+
+activate LP1
+LP1->LP1: Bind address1
+LP1->C: Register(name1,address1)
+deactivate LP1
+
+LP1->C: Address(name2)
+
+activate LP2
+LP2->LP2: Bind address2
+LP2->C: Register(name2,address2)
+deactivate LP2
+
+C->LP1: Address(name2,address2)
+
+LP2->C: Address(name1)
+
+C->LP2: Address(name1,address1)
+
+LP2->LP1: Connect(address1)
+LP2->C: Ready()
+
+LP1->LP2: Connect(address2)
+LP1->C: Ready()
+
+C->LP2:Start()
+C->LP1:Start()
+
+== Execution ==
+group Simulation
+
+LP1->LP2: Forward Payload
+
+LP2->C: Syscall(sbrk)
+activate C
+LP2->LP1: Backward Payload
+C->LP2: sbrk,ptr
+deactivate C
+
+LP1->C: Syscall(open)
+activate C
+C->FS: open
+activate FS
+FS->C: open
+deactivate FS
+C->LP1: open,fd
+deactivate C
+
+LP2->LP1: Forward Payload
+LP1->LP2: Backward Payload
+
+LP2->C: Syscall(write,fd)
+activate C
+C->FS: write
+activate FS
+FS->C: write
+deactivate FS
+C->LP2: write,ret
+deactivate C
+
+end
+
+LP2->C: Exit()
+activate C
+C->LP1: Finnish()
+LP1->C: Exit()
+deactivate C  
+
+C->U: Return
+
+@enduml
+
