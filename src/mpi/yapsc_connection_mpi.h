@@ -3,6 +3,7 @@
 
 #include <mpi.h>
 #include <stdint.h>
+#include <string>
 
 namespace yapsc {
 void send_string_mpi(MPI_Comm comm, int domain, int tag,
